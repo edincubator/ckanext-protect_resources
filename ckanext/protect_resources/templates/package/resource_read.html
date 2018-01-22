@@ -1,0 +1,46 @@
+{% ckan_extends %}
+
+{% block flash_inner %}
+{% endblock %}
+
+{% block resource_actions %}
+  {% if c.userobj != None %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block resource_content %}
+  {% block resource_read_title %}<h1 class="page-heading">{{ h.resource_display_name(res) | truncate(50) }}</h1>{% endblock %}
+  {% if c.userobj != None %}
+    {% block resource_read_url %}
+      {% if res.url and h.is_url(res.url) %}
+        <p class="muted ellipsis">{{ _('URL:') }} <a class="resource-url-analytics" href="{{ res.url }}" title="{{ res.url }}">{{ res.url }}</a></p>
+      {% elif res.url %}
+        <p class="muted break-word">{{ _('URL:') }} {{ res.url }}</p>
+      {% endif %}
+    {% endblock %}
+    <div class="prose notes" property="rdfs:label">
+      {% if res.description %}
+        {{ h.render_markdown(res.description) }}
+      {% endif %}
+      {% if not res.description and c.package.notes %}
+        <h3>{{ _('From the dataset abstract') }}</h3>
+        <blockquote>{{ h.markdown_extract(h.get_translated(c.package, 'notes')) }}</blockquote>
+        <p>{% trans dataset=c.package.title, url=h.url_for(controller='package', action='read', id=c.package['name']) %}Source: <a href="{{ url }}">{{ dataset }}</a>{% endtrans %}
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="well alert-error">
+      You must be {% link_for _('logged into EDI Data Catalogue'), controller='user', action='login' %} for downloading resources.
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block data_preview %}
+{% endblock %}
+
+{% block resource_additional_information %}
+  {% if c.userobj != None %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}

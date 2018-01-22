@@ -1,0 +1,11 @@
+{% ckan_extends %}
+
+{% block resource_list %}
+  {% if c.userobj != None %}
+    {{ super() }}
+  {% else %}
+    <div class="well alert-error">
+      You must be {% link_for _('logged into EDI Data Catalogue'), controller='user', action='login' %} for downloading resources.
+    </div>
+  {% endif %}
+{% endblock %}
